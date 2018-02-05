@@ -5,3 +5,5 @@
 <b>What tech stack was used?</b> C++ and SDL2
 
 <b>Why would you use such a low level tech stack for a game jam?</b> This was less about the game and more about the desire for me to work more with raw C++, SDL2, Makefiles and Visual Studio Codes C++ plugin. You could probably crank out something better than this using Unity in an hour but this was more about learning than anything else.
+
+<b>How do I build and run this?</b> The build for this currently only supports Linux but due to the projects small size it would be very easy to get it working on Windows. The only things it links against are SDL2, SDL2_image, SDL2_mixer and SDL2_ttf.
