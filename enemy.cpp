@@ -203,19 +203,19 @@ void Enemy::Render()
 {
 	SDL_Rect rect;
 
-	// { // Draw current path
+	{ // Draw current path
 
-	// 	rect.w = mCellWidth;
-	// 	rect.h = mCellHeight;
+		rect.w = mCellWidth;
+		rect.h = mCellHeight;
 
-	// 	SDL_SetRenderDrawColor( mRenderer, 185, 255, 112, 200 );
-	// 	for( SDL_Point& point : mCurrentPath )
-	// 	{
-	// 		rect.x = point.x * mCellWidth;
-	// 		rect.y = point.y * mCellHeight;
-	// 		SDL_RenderFillRect( mRenderer, &rect );
-	// 	}
-	// }
+		SDL_SetRenderDrawColor( mRenderer, 185, 255, 112, 200 );
+		for( SDL_Point& point : mCurrentPath )
+		{
+			rect.x = point.x * mCellWidth;
+			rect.y = point.y * mCellHeight;
+			SDL_RenderFillRect( mRenderer, &rect );
+		}
+	}
 
 	// Draw Enemy
 	rect.x = static_cast<int>( mTopLeftX );
