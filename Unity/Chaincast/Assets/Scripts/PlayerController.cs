@@ -17,11 +17,6 @@ public class PlayerController : MonoBehaviour
             Debug.LogError( "no rigid body in player" );
     }
 
-    private void FixedUpdate()
-    {
-        
-    }
-
     // Update is called once per frame
     void Update()
     {
