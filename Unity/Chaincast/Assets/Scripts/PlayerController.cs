@@ -28,12 +28,10 @@ public class PlayerController : MonoBehaviour
         float horizontalInput = Input.GetAxis( "Horizontal" );
         float verticalInput = Input.GetAxis( "Vertical" );
 
-        Vector2 inputVector = new Vector2(horizontalInput, verticalInput);
-        Vector2 speedVector = inputVector * maxSpeed;
+        Vector2 normalisedInputVector = (new Vector2(horizontalInput, verticalInput)).normalized;
+        float xVel = horizontalInput * maxSpeed * Mathf.Abs(normalisedInputVector.x);
+        float yVel = verticalInput * maxSpeed * Mathf.Abs(normalisedInputVector.y);
 
-        Vector2 normalisedInputVector = inputVector.normalized;
-        Vector2 fixedSpeedVector = new Vector2(speedVector.x * Mathf.Abs(normalisedInputVector.x), speedVector.y * Mathf.Abs(normalisedInputVector.y));
-
-        rb.velocity = fixedSpeedVector;
+        rb.velocity = new Vector2(xVel, yVel);
     }
 }
