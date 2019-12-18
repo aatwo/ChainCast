@@ -34,15 +34,6 @@ public class PlayerController : MonoBehaviour
         Vector2 normalisedInputVector = inputVector.normalized;
         Vector2 fixedSpeedVector = new Vector2(speedVector.x * Mathf.Abs(normalisedInputVector.x), speedVector.y * Mathf.Abs(normalisedInputVector.y));
 
-        //bool horizontalThresholdMet = Mathf.Abs( horizontalInput ) > 0.1f;
-        //bool verticalThresholdMet = Mathf.Abs( verticalInput ) > 0.1f;
-
-        //if( horizontalThresholdMet )
-            //finalSpeedVector.x = speedVector.x;
-
-        //if( verticalThresholdMet )
-            //finalSpeedVector.y = speedVector.y;
-
         rb.velocity = fixedSpeedVector;
     }
 }
