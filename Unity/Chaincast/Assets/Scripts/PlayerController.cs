@@ -26,16 +26,41 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if( playerIndex == 0 )
+        // TODO: allow support for players 3 and 4
+        if( playerIndex == 0 || playerIndex == 1 )
         {
-            float horizontalInput = Input.GetAxis( "Horizontal" );
-            float verticalInput = Input.GetAxis( "Vertical" );
+            Vector2 inputVector = ProcessKeyboardInput();
 
-            Vector2 normalisedInputVector = (new Vector2(horizontalInput, verticalInput)).normalized;
-            float xVel = horizontalInput * maxSpeed * Mathf.Abs(normalisedInputVector.x);
-            float yVel = verticalInput * maxSpeed * Mathf.Abs(normalisedInputVector.y);
-
-            rb.velocity = new Vector2( xVel, yVel );
+            // If no keyboard movement then try gamepad
+            if( inputVector.x == 0f && inputVector.y == 0f)
+                ProcessGamepadInput();
         }
+    }
+
+    Vector2 ProcessKeyboardInput()
+    {
+        string horizontalAxisName = "Horizontal" + playerIndex + "_key";
+        string verticalAxisName = "Vertical" + playerIndex + "_key";
+        return ProcessAxisInput( horizontalAxisName, verticalAxisName );
+    }
+
+    Vector2 ProcessGamepadInput()
+    {
+        string horizontalAxisName = "Horizontal" + playerIndex + "_gamepad";
+        string verticalAxisName = "Vertical" + playerIndex + "_gamepad";
+        return ProcessAxisInput( horizontalAxisName, verticalAxisName );
+    }
+
+    Vector2 ProcessAxisInput(string horizontalName, string verticalName)
+    {
+        float horizontalInput = Input.GetAxis( horizontalName );
+        float verticalInput = Input.GetAxis( verticalName );
+
+        Vector2 normalisedInputVector = (new Vector2(horizontalInput, verticalInput)).normalized;
+        float xVel = horizontalInput * maxSpeed * Mathf.Abs(normalisedInputVector.x);
+        float yVel = verticalInput * maxSpeed * Mathf.Abs(normalisedInputVector.y);
+
+        rb.velocity = new Vector2( xVel, yVel );
+        return new Vector2( horizontalInput, verticalInput );
     }
 }

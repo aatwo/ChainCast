@@ -45,7 +45,7 @@ public class GameManager : MonoBehaviour
         for( int x = 0; x < Common.gameWidth; x++ )
         {
             bool isHorizontalEdge = (x == 0 || x == Common.gameWidth - 1);
-            for( int y = 0; y < Common.gameWidth; y++ )
+            for( int y = 0; y < Common.gameHeight; y++ )
             {
                 bool isVerticalEdge = (y == 0 || y == Common.gameHeight - 1);
 
