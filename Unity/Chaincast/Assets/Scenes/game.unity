@@ -173,6 +173,8 @@ MonoBehaviour:
     type: 3}
   playerPrefab: {fileID: 1812494399520446936, guid: 5359c8a1c6d5fe742a37ca13e01383cf,
     type: 3}
+  monsterPrefab: {fileID: 4271129295854139366, guid: a6bb3ec06e5be2243a2b153fad54cba1,
+    type: 3}
 --- !u!114 &190987906
 MonoBehaviour:
   m_ObjectHideFlags: 0

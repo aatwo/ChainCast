@@ -15,23 +15,28 @@ public class GameManager : MonoBehaviour
     [SerializeField] Transform breakableWallPrefab;
 
     [SerializeField] Transform playerPrefab;
+    [SerializeField] Transform monsterPrefab;
 
     Vector2Int[] playerSpawnLocations = new Vector2Int[4];
+    Vector2Int monsterSpawnLocation;
     List<PlayerController> playerList = new List<PlayerController>();
 
     private void Start()
     {
-        CalculatePlayerSpawnLocations();
+        CalculateSpawnLocations();
         GenerateLevel();
         SpawnPlayers();
+        SpawnMonster();
     }
 
-    void CalculatePlayerSpawnLocations()
+    void CalculateSpawnLocations()
     {
         playerSpawnLocations[0] = new Vector2Int( 1, Common.gameHeight - 2 );
         playerSpawnLocations[1] = new Vector2Int( 1, 1 );
         playerSpawnLocations[2] = new Vector2Int( Common.gameWidth - 2, Common.gameHeight - 2 );
         playerSpawnLocations[3] = new Vector2Int( Common.gameWidth - 2, 1 );
+
+        monsterSpawnLocation = new Vector2Int( Common.gameWidth / 2, Common.gameHeight / 2 );
     }
 
     void GenerateLevel()
@@ -52,7 +57,7 @@ public class GameManager : MonoBehaviour
                 Vector3Int p = new Vector3Int( x, y, 0 );
                 floorTilemap.SetTile( p, floorTile );
 
-                bool isSpawnLocation = IsTilePlayerSpawn( x, y );
+                bool isSpawnLocation = IsTileSpawnLocation( x, y );
                 if( !isSpawnLocation )
                 {
                     bool isColumn = (isXColumn && isYColumn);
@@ -92,6 +97,12 @@ public class GameManager : MonoBehaviour
         // TODO: bind a controller to this player?
     }
 
+    void SpawnMonster()
+    {
+        Vector3 spawnPos = GetTileCenterPos(monsterSpawnLocation.x, monsterSpawnLocation.y);
+        Instantiate( monsterPrefab, spawnPos, Quaternion.identity, transform );
+    }
+
     Vector3 GetTileCenterPos(int x, int y)
     {
         Vector3Int cellPos = new Vector3Int(x, y, 0);
@@ -102,13 +113,17 @@ public class GameManager : MonoBehaviour
         Vector3 pos = GetTileCenterPos(playerSpawnLocations[index].x, playerSpawnLocations[index].y);
         return new Vector3(pos.x, pos.y, 0f);
     }
-    bool IsTilePlayerSpawn(int x, int y)
+    bool IsTileSpawnLocation(int x, int y)
     {
         for( int i = 0; i < playerSpawnLocations.Length; i++ )
         {
             if( playerSpawnLocations[i].x == x && playerSpawnLocations[i].y == y )
                 return true;
         }
+
+        if( monsterSpawnLocation.x == x && monsterSpawnLocation.y == y )
+            return true;
+
         return false;
     }
 }

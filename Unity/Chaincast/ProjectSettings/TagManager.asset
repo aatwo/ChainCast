@@ -54,6 +54,12 @@ TagManager:
   - name: PlayerEffects
     uniqueID: 771080879
     locked: 0
+  - name: Enemy
+    uniqueID: 812911345
+    locked: 0
+  - name: EnemyEffects
+    uniqueID: 3289204443
+    locked: 0
   - name: Projectiles
     uniqueID: 179077897
     locked: 0
