@@ -169,6 +169,7 @@ MonoBehaviour:
   floorTile: {fileID: 11400000, guid: b52480895918d15449376ba8e5279eec, type: 2}
   environmentTilemap: {fileID: 588477916}
   wallTile: {fileID: 11400000, guid: 346afd500df1b774b93d4604fc50f171, type: 2}
+  breakableWallTile: {fileID: 11400000, guid: 9837501f5b1da1345847a0c8862a20c3, type: 2}
   playerPrefab: {fileID: 1812494399520446936, guid: 5359c8a1c6d5fe742a37ca13e01383cf,
     type: 3}
 --- !u!114 &190987906

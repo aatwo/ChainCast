@@ -4,6 +4,6 @@ using UnityEngine;
 
 public class Common : MonoBehaviour
 {
-    static public int gameWidth = 32;
-    static public int gameHeight = 32;
+    static public int gameWidth = 33;
+    static public int gameHeight = 33;
 }

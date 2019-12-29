@@ -17,6 +17,8 @@ public class GameManager : MonoBehaviour
     Tilemap environmentTilemap;
     [SerializeField]
     Tile wallTile;
+    [SerializeField]
+    Tile breakableWallTile;
 
     [SerializeField]
     Transform playerPrefab;
@@ -42,9 +44,13 @@ public class GameManager : MonoBehaviour
     void GenerateLevel()
     {
         int wallChancePercent = 30;
+
+        bool isXColumn = true;
         for( int x = 0; x < Common.gameWidth; x++ )
         {
             bool isHorizontalEdge = (x == 0 || x == Common.gameWidth - 1);
+
+            bool isYColumn = true;
             for( int y = 0; y < Common.gameHeight; y++ )
             {
                 bool isVerticalEdge = (y == 0 || y == Common.gameHeight - 1);
@@ -53,13 +59,21 @@ public class GameManager : MonoBehaviour
                 Vector3Int p = new Vector3Int( x, y, 0 );
                 floorTilemap.SetTile( p, floorTile );
 
-                if( IsTilePlayerSpawn(x, y) )
-                    continue;
+                bool isSpawnLocation = IsTilePlayerSpawn( x, y );
+                if( !isSpawnLocation )
+                {
+                    bool isColumn = (isXColumn && isYColumn);
+                    if( isHorizontalEdge || isVerticalEdge || isColumn )
+                        environmentTilemap.SetTile( p, wallTile );
 
-                // Place environment tile
-                if( isHorizontalEdge || isVerticalEdge || Random.Range( 0, 100 ) < wallChancePercent )
-                    environmentTilemap.SetTile( p, wallTile );
+                    else if( Random.Range( 0, 100 ) < wallChancePercent )
+                        environmentTilemap.SetTile( p, breakableWallTile );
+                }
+
+                isYColumn = !isYColumn;
             }
+
+            isXColumn = !isXColumn;
         }
     }
 

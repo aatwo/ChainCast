@@ -11,6 +11,9 @@ TextureImporter:
   - first:
       213: -8213103708465372677
     second: environment_tiles_2
+  - first:
+      213: -8569951659098495130
+    second: environment_tiles_3
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -107,7 +110,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 561cbb6117905a14aaf2378c0e988703
+      spriteID: 2586bb654abf79443a726532999edf9b
       internalID: 2145980666716902005
       vertices: []
       indices: 
@@ -128,7 +131,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: aee73c9dfa8c8024caa69988676bd03f
+      spriteID: 6b925a6b982598f4abc14957e280faad
       internalID: 2098590250152834597
       vertices: []
       indices: 
@@ -149,8 +152,29 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 3ef19c576991f6f4086d60d15717ac0b
+      spriteID: 17083739da767de40b65259108cea0fb
       internalID: -8213103708465372677
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: environment_tiles_3
+      rect:
+        serializedVersion: 2
+        x: 12
+        y: 162
+        width: 33
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ccb7fe58381cdf94abe18e061ef47385
+      internalID: -8569951659098495130
       vertices: []
       indices: 
       edges: []
