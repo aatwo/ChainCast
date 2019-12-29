@@ -18,7 +18,7 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     Tile wallTile;
     [SerializeField]
-    Tile breakableWallTile;
+    Transform breakableWallPrefab;
 
     [SerializeField]
     Transform playerPrefab;
@@ -67,7 +67,7 @@ public class GameManager : MonoBehaviour
                         environmentTilemap.SetTile( p, wallTile );
 
                     else if( Random.Range( 0, 100 ) < wallChancePercent )
-                        environmentTilemap.SetTile( p, breakableWallTile );
+                        Instantiate( breakableWallPrefab, GetTileCenterPos( x, y ), Quaternion.identity, transform );
                 }
 
                 isYColumn = !isYColumn;
