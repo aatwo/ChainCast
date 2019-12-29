@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, ProjectileTarget
 {
     public float maxSpeed = 5f;
     public float projectileSpeed = 10f;
@@ -13,11 +13,21 @@ public class PlayerController : MonoBehaviour
     Rigidbody2D rb;
     Transform projectileSpawn;
     Transform playerDirectionPointer;
+    Transform playerFrozenOverlay;
 
     int playerIndex = 0;
     float lastDirectionDegrees = 0.0f;
     Vector2 lastDirectionVector = new Vector2(1f, 0f);
     float lastFireTime = 0f;
+
+    bool stunned = false;
+    float stunDurationS = 2f;
+    float lastStunTime = 0f;
+
+    public void HandleProjectileCollision( Transform t, Projectile p )
+    {
+        SetStunned( true );
+    }
 
     public void SetPlayerIndex(int n)
     {
@@ -43,6 +53,9 @@ public class PlayerController : MonoBehaviour
                         projectileSpawn = dp_t;
                 }
             }
+
+            else if( t.name == "FrozenOverlay" )
+                playerFrozenOverlay = t;
         }
 
         if( playerDirectionPointer  == null )
@@ -50,6 +63,9 @@ public class PlayerController : MonoBehaviour
 
         if( projectileSpawn == null )
             Debug.LogError( "no projectile spawn found in player children" );
+
+        if( playerFrozenOverlay == null )
+            Debug.LogError( "no player frozen overlay found in player children" );
     }
 
     // Update is called once per frame
@@ -58,9 +74,14 @@ public class PlayerController : MonoBehaviour
         // TODO: allow support for players 2, 3 and 4
         if( playerIndex == 0 )
         {
-            ProcessMovementInput();
-            ProcessGunfireInput();
+            if( !stunned )
+            {
+                ProcessMovementInput();
+                ProcessGunfireInput();
+            }
         }
+
+        CheckStunned();
     }
 
     void ProcessMovementInput()
@@ -141,5 +162,33 @@ public class PlayerController : MonoBehaviour
     {
         Vector2 baseDirection = new Vector2(1f, 0f);
         return Common.AngleBetweenTwoPoints( vec, baseDirection );
+    }
+
+    void SetStunned( bool isStunned )
+    {
+        if( isStunned )
+        {
+            stunned = true;
+            lastStunTime = Time.time;
+            playerFrozenOverlay.gameObject.SetActive( true );
+        }
+        else
+        {
+            stunned = false;
+            playerFrozenOverlay.gameObject.SetActive( false );
+        }
+    }
+
+    void CheckStunned()
+    {
+        float stunDurationS = 2f;
+        if( stunned )
+        {
+            float timeStunned = Time.time - lastStunTime;
+            if( timeStunned >= stunDurationS )
+            {
+                SetStunned( false );
+            }
+        }
     }
 }

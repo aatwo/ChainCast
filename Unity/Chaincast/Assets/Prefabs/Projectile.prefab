@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6456929221516613890}
   - component: {fileID: 6456929221516613892}
   - component: {fileID: 6456929221516613895}
-  - component: {fileID: -8276496624888328700}
+  - component: {fileID: -2634139408975514574}
   m_Layer: 0
   m_Name: Projectile
   m_TagString: Untagged
@@ -69,7 +69,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 179077897
-  m_SortingLayer: 4
+  m_SortingLayer: 5
   m_SortingOrder: 0
   m_Sprite: {fileID: 6158802113039044628, guid: c62b4644c5379f84a9cbd4b1c83872b2,
     type: 3}
@@ -115,12 +115,12 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 0
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: c373bb89f98e2fe4a874504a4fbb7343, type: 2}
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &-8276496624888328700
+--- !u!114 &-2634139408975514574
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -129,6 +129,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6456929221516613891}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ea2e5203da81a5946b5163b2477d11ce, type: 3}
+  m_Script: {fileID: 11500000, guid: 411bc7b722c05294eb36e68370a32dab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  lifeSpanS: 2

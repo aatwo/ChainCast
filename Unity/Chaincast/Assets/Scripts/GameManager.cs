@@ -5,23 +5,16 @@ using UnityEngine.Tilemaps;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField]
-    Transform mainCamera;
+    [SerializeField] Transform mainCamera;
 
-    [SerializeField]
-    Tilemap floorTilemap;
-    [SerializeField]
-    Tile floorTile;
+    [SerializeField] Tilemap floorTilemap;
+    [SerializeField] Tile floorTile;
 
-    [SerializeField]
-    Tilemap environmentTilemap;
-    [SerializeField]
-    Tile wallTile;
-    [SerializeField]
-    Transform breakableWallPrefab;
+    [SerializeField] Tilemap environmentTilemap;
+    [SerializeField] Tile wallTile;
+    [SerializeField] Transform breakableWallPrefab;
 
-    [SerializeField]
-    Transform playerPrefab;
+    [SerializeField] Transform playerPrefab;
 
     Vector2Int[] playerSpawnLocations = new Vector2Int[4];
     List<PlayerController> playerList = new List<PlayerController>();

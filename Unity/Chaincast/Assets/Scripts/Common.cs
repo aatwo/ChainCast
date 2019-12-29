@@ -2,12 +2,27 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public interface Projectile
+{
+    int GetProjectileDamage();
+    Common.ProjectileType GetProjectileType();
+}
+
+public interface ProjectileTarget
+{
+    void HandleProjectileCollision( Transform t, Projectile p );
+}
+
 public class Common : MonoBehaviour
 {
     static public int gameWidth = 33;
     static public int gameHeight = 33;
 
     static public string destructableWallTag = "DestructableWall";
+    public enum ProjectileType
+    {
+        standard
+    };
 
     public static float AngleBetweenTwoPoints( Vector2 vec1, Vector2 vec2 )
     {
