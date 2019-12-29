@@ -5,13 +5,19 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public float maxSpeed = 5f;
+    public float projectileSpeed = 10f;
+    public float reloadDurationS = 2f;
+    public Transform ProjectilePrefab;
 
     // Automatically located objects
     Rigidbody2D rb;
+    Transform projectileSpawn;
     Transform playerDirectionPointer;
 
     int playerIndex = 0;
     float lastDirectionDegrees = 0.0f;
+    Vector2 lastDirectionVector = new Vector2(1f, 0f);
+    float lastFireTime = 0f;
 
     public void SetPlayerIndex(int n)
     {
@@ -28,46 +34,89 @@ public class PlayerController : MonoBehaviour
         foreach( Transform t in transform )
         {
             if( t.name == "DirectionPointer" )
+            {
                 playerDirectionPointer = t;
+
+                foreach( Transform dp_t in t )
+                {
+                    if( dp_t.name == "ProjectileSpawn" )
+                        projectileSpawn = dp_t;
+                }
+            }
         }
 
         if( playerDirectionPointer  == null )
             Debug.LogError( "no direction pointer found in player children" );
+
+        if( projectileSpawn == null )
+            Debug.LogError( "no projectile spawn found in player children" );
     }
 
     // Update is called once per frame
     void Update()
     {
-        // TODO: allow support for players 3 and 4
-        if( playerIndex == 0 || playerIndex == 1 )
+        // TODO: allow support for players 2, 3 and 4
+        if( playerIndex == 0 )
         {
-            Vector2 inputVector = ProcessKeyboardInput();
-
-            // If no keyboard movement then try gamepad
-            if( inputVector.x == 0f && inputVector.y == 0f)
-                ProcessGamepadInput();
+            ProcessMovementInput();
+            ProcessGunfireInput();
         }
     }
 
-    Vector2 ProcessKeyboardInput()
+    void ProcessMovementInput()
+    {
+        Vector2 inputVector = ProcessKeyboardMovementInput();
+
+        // If no keyboard movement then try gamepad
+        if( inputVector.x == 0f && inputVector.y == 0f )
+            ProcessGamepadMovementInput();
+    }
+
+    void ProcessGunfireInput()
+    {
+        float timeSinceLastShot = Time.time - lastFireTime;
+        if( timeSinceLastShot >= reloadDurationS )
+        {
+            string name = "Fire" + playerIndex;
+            bool fireButtonPressed = Input.GetButton( name );
+            if(fireButtonPressed)
+            {
+                lastFireTime = Time.time;
+                Transform projectile = Instantiate(ProjectilePrefab, projectileSpawn.position, Quaternion.identity, transform);
+                Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
+                if( rb == null )
+                    Debug.LogError( "Unable to find rigid body in player projectile" );
+
+                rb.velocity = projectileSpeed * lastDirectionVector;
+                Debug.Log( "Last direction: (x: " + lastDirectionVector.x + ", y: " + lastDirectionVector.y + ")" );
+            }
+        }
+    }
+
+    Vector2 ProcessKeyboardMovementInput()
     {
         string horizontalAxisName = "Horizontal" + playerIndex + "_key";
         string verticalAxisName = "Vertical" + playerIndex + "_key";
-        return ProcessAxisInput( horizontalAxisName, verticalAxisName );
+
+        float horizontalInput = Input.GetAxisRaw( horizontalAxisName );
+        float verticalInput = Input.GetAxisRaw( verticalAxisName );
+
+        return ProcessAxisInput( horizontalInput, verticalInput );
     }
 
-    Vector2 ProcessGamepadInput()
+    Vector2 ProcessGamepadMovementInput()
     {
         string horizontalAxisName = "Horizontal" + playerIndex + "_gamepad";
         string verticalAxisName = "Vertical" + playerIndex + "_gamepad";
-        return ProcessAxisInput( horizontalAxisName, verticalAxisName );
+
+        float horizontalInput = Input.GetAxisRaw( horizontalAxisName );
+        float verticalInput = Input.GetAxisRaw( verticalAxisName );
+
+        return ProcessAxisInput( horizontalInput, verticalInput );
     }
 
-    Vector2 ProcessAxisInput(string horizontalName, string verticalName)
+    Vector2 ProcessAxisInput( float horizontalInput, float verticalInput )
     {
-        float horizontalInput = Input.GetAxisRaw( horizontalName );
-        float verticalInput = Input.GetAxisRaw( verticalName );
-
         Vector2 normalisedInputVector = (new Vector2(horizontalInput, verticalInput)).normalized;
         float xVel = horizontalInput * maxSpeed * Mathf.Abs(normalisedInputVector.x);
         float yVel = verticalInput * maxSpeed * Mathf.Abs(normalisedInputVector.y);
@@ -78,6 +127,7 @@ public class PlayerController : MonoBehaviour
         if( Mathf.Abs(horizontalInput) > 0.1f || Mathf.Abs(verticalInput) > 0.1f )
         {
             lastDirectionDegrees = CalculateDirectionAngle( rb.velocity );
+            lastDirectionVector = normalisedInputVector;
 
             Quaternion rotation = playerDirectionPointer.rotation;
             rotation = Quaternion.Euler( 0f, 0f, -lastDirectionDegrees );
@@ -87,16 +137,9 @@ public class PlayerController : MonoBehaviour
         return new Vector2( horizontalInput, verticalInput );
     }
 
-    float AngleBetweenVector2( Vector2 vec1, Vector2 vec2 )
-    {
-        Vector2 vec1Rotated90 = new Vector2(-vec1.y, vec1.x);
-        float sign = (Vector2.Dot(vec1Rotated90, vec2) < 0) ? -1.0f : 1.0f;
-        return Vector2.Angle( vec1, vec2 ) * sign;
-    }
-
     float CalculateDirectionAngle( Vector2 vec )
     {
         Vector2 baseDirection = new Vector2(1f, 0f);
-        return AngleBetweenVector2( vec, baseDirection );
+        return Common.AngleBetweenTwoPoints( vec, baseDirection );
     }
 }

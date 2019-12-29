@@ -50,3 +50,6 @@ TagManager:
   - name: PlayerPointer
     uniqueID: 1776620809
     locked: 0
+  - name: Projectiles
+    uniqueID: 179077897
+    locked: 0
