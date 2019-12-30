@@ -54,7 +54,7 @@ public class GameManager : MonoBehaviour
             foundPath = pathFinder.FindPath( monsterGridPos.x, monsterGridPos.y, playerGridPos.x, playerGridPos.y );
             path = null;
             if( foundPath )
-                path = pathFinder.GetPath();
+                path = pathFinder.GetLastPath();
             lastPathFinderTime = Time.time;
         }
 

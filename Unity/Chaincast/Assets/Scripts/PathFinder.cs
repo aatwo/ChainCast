@@ -37,6 +37,9 @@ public class PathFinder : MonoBehaviour
 
     public bool FindPath( int startX, int startY, int targetX, int targetY )
     {
+        System.Diagnostics.Stopwatch st = new System.Diagnostics.Stopwatch();
+        st.Start();
+
         mStartX = startX;
         mStartY = startY;
         mTargetX = targetX;
@@ -59,10 +62,15 @@ public class PathFinder : MonoBehaviour
 
         // Add the startNode to the open node list to start things off
         mOpenNodeList.Add( mStartNode );
-
+        int stepCount = 0;
         while( mFindingPath )
+        {
             Step();
+            stepCount++;
+        }
 
+        st.Stop();
+        Debug.Log( string.Format( "FindPath took {0} ms, took {1} iterations to compute and resulted in a path containing {2} steps", st.ElapsedMilliseconds, stepCount, mLastPathToTarget.Count ) );
         return mFoundPath;
     }
 
@@ -74,7 +82,7 @@ public class PathFinder : MonoBehaviour
         return mLastPathToTarget.Count;
     }
 
-    public List<Vector2Int> GetPath()
+    public List<Vector2Int> GetLastPath()
     {
         List<Vector2Int> ret = new List<Vector2Int>(mLastPathToTarget.Count);
 
