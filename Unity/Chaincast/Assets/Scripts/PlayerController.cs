@@ -109,7 +109,6 @@ public class PlayerController : MonoBehaviour, ProjectileTarget
                     Debug.LogError( "Unable to find rigid body in player projectile" );
 
                 rb.velocity = projectileSpeed * lastDirectionVector;
-                Debug.Log( "Last direction: (x: " + lastDirectionVector.x + ", y: " + lastDirectionVector.y + ")" );
             }
         }
     }
