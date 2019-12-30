@@ -15,9 +15,6 @@ public interface ProjectileTarget
 
 public class Common : MonoBehaviour
 {
-    //static public int gameWidth = 33;
-    //static public int gameHeight = 33;
-
     static public string destructableWallTag = "DestructableWall";
     public enum ProjectileType
     {

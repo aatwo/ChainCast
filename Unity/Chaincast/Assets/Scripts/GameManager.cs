@@ -5,8 +5,8 @@ using UnityEngine.Tilemaps;
 
 public class GameManager : MonoBehaviour
 {
-    public const int gameWidth = 33;
-    public const int gameHeight = 33;
+    public static int gameWidth = 33;
+    public static int gameHeight = 33;
 
     [SerializeField] Transform mainCamera;
 
@@ -24,13 +24,15 @@ public class GameManager : MonoBehaviour
     Vector2Int monsterSpawnLocation;
     List<PlayerController> playerList = new List<PlayerController>();
     Transform monster;
+    MonsterController monsterController;
 
     PathFinder pathFinder;
-
     float pathFinderInterval = 1f;
     float lastPathFinderTime = 0f;
+
     bool foundPath = false;
-    List<Vector2Int> path;
+    List<Vector2Int> path = new List<Vector2Int>();
+    List<Vector3> worldPath = new List<Vector3>();
 
     private void Start()
     {
@@ -44,30 +46,7 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        float timeSinceLastPathFindAttempt = Time.time - lastPathFinderTime;
-
-        // TODO
-        if( timeSinceLastPathFindAttempt >= pathFinderInterval )
-        {
-            Vector3Int monsterGridPos = GetTileCellFromWorldPos(monster.transform.position);
-            Vector3Int playerGridPos = GetTileCellFromWorldPos(playerList[0].transform.position);
-            foundPath = pathFinder.FindPath( monsterGridPos.x, monsterGridPos.y, playerGridPos.x, playerGridPos.y );
-            path = null;
-            if( foundPath )
-                path = pathFinder.GetLastPath();
-            lastPathFinderTime = Time.time;
-        }
-
-        if( foundPath )
-        {
-            for( int i = 0; i <= path.Count - 2; i++ )
-            {
-                Vector3 posA = GetTileCenterPos( path[i].x, path[i].y );
-                Vector3 posB = GetTileCenterPos( path[i + 1].x, path[i + 1].y );
-
-                Debug.DrawLine( posA, posB, Color.red );
-            }
-        }
+        CalculateMonsterPath();
     }
 
     void CalculateSpawnLocations()
@@ -160,6 +139,9 @@ public class GameManager : MonoBehaviour
     {
         Vector3 spawnPos = GetTileCenterPos(monsterSpawnLocation.x, monsterSpawnLocation.y);
         monster = Instantiate( monsterPrefab, spawnPos, Quaternion.identity, transform ) as Transform;
+        monsterController = monster.GetComponent<MonsterController>();
+        if( monsterController == null )
+            Debug.LogError("No monster controller found on monster");
     }
 
     Vector3Int GetTileCellFromWorldPos(Vector3 pos)
@@ -188,6 +170,52 @@ public class GameManager : MonoBehaviour
             return true;
 
         return false;
+    }
+
+    void CalculateMonsterPath()
+    {
+        float timeSinceLastPathFindAttempt = Time.time - lastPathFinderTime;
+        if( timeSinceLastPathFindAttempt >= pathFinderInterval )
+        {
+            Vector3Int monsterGridPos = GetTileCellFromWorldPos(monster.transform.position);
+            Vector3Int playerGridPos = GetTileCellFromWorldPos(playerList[0].transform.position);
+            foundPath = pathFinder.FindPath( monsterGridPos.x, monsterGridPos.y, playerGridPos.x, playerGridPos.y );
+            if( foundPath )
+            {
+                path = pathFinder.GetLastPath();
+
+                // Remove the first worldPath item if this is the cell the monster currently inhabits
+                if( path.Count > 0 && path[0].x == monsterGridPos.x && path[0].y == monsterGridPos.y )
+                    path.RemoveAt( 0 );
+
+                worldPath = new List<Vector3>( path.Count );
+                foreach( Vector2Int gridPos in path )
+                {
+                    Vector3 worldPos = GetTileCenterPos(gridPos.x, gridPos.y);
+                    worldPath.Add( worldPos );
+                }
+            }
+            lastPathFinderTime = Time.time;
+        }
+
+        if( foundPath )
+        {
+            // Pass the path (in world coordinates) to the monster
+            monsterController.SetPath( ref worldPath );
+
+            // Render the current path
+            for( int i = 0; i <= path.Count - 2; i++ )
+            {
+                Vector3 posA = GetTileCenterPos( path[i].x, path[i].y );
+                Vector3 posB = GetTileCenterPos( path[i + 1].x, path[i + 1].y );
+
+                Debug.DrawLine( posA, posB, Color.red );
+            }
+        }
+        else
+        {
+            monsterController.ClearPath();
+        }
     }
 
     void HandleObstacleAboutToDie(Transform obstacleTransform)

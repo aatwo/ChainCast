@@ -92,6 +92,7 @@ public class PathFinder : MonoBehaviour
             ret.Add( mNodes[index].pos );
         }
 
+        ret.Reverse();
         return ret;
     }
 
