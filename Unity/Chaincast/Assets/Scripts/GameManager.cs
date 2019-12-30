@@ -23,6 +23,7 @@ public class GameManager : MonoBehaviour
     Vector2Int[] playerSpawnLocations = new Vector2Int[4];
     Vector2Int monsterSpawnLocation;
     List<PlayerController> playerList = new List<PlayerController>();
+    Transform monster;
 
     PathFinder pathFinder;
 
@@ -44,20 +45,18 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         float timeSinceLastPathFindAttempt = Time.time - lastPathFinderTime;
-        Vector2Int startPos = new Vector2Int(1, 1);
 
+        // TODO
         if( timeSinceLastPathFindAttempt >= pathFinderInterval )
         {
-            Vector3Int playerGridPos = environmentTilemap.layoutGrid.WorldToCell(playerList[0].transform.position);
-            foundPath = pathFinder.FindPath( startPos.x, startPos.y, playerGridPos.x, playerGridPos.y );
+            Vector3Int monsterGridPos = GetTileCellFromWorldPos(monster.transform.position);
+            Vector3Int playerGridPos = GetTileCellFromWorldPos(playerList[0].transform.position);
+            foundPath = pathFinder.FindPath( monsterGridPos.x, monsterGridPos.y, playerGridPos.x, playerGridPos.y );
             path = null;
             if( foundPath )
                 path = pathFinder.GetPath();
             lastPathFinderTime = Time.time;
-            Debug.Log( "FOUND PATH: " + foundPath );
         }
-
-        //Debug.DrawLine( GetTileCenterPos(startPos.x, startPos.y), GetTileCenterPos(endPos.x, endPos.y), Color.blue);
 
         if( foundPath )
         {
@@ -111,18 +110,18 @@ public class GameManager : MonoBehaviour
                         wallGridPositions.Add( new Vector2Int( x, y ) );
                     }
 
-                    // TEMP
-                    //else if( x == 2 )
-                    //{
-                    //    Instantiate( breakableWallPrefab, GetTileCenterPos( x, y ), Quaternion.identity, transform );
-                    //    wallGridPositions.Add( new Vector2Int( x, y ) );
-                    //}
-                    // END TEMP
-
                     else if( Random.Range( 0, 100 ) < wallChancePercent && /* TEMP */ x != 1 /* END TEMP*/ )
                     {
-                        Instantiate( breakableWallPrefab, GetTileCenterPos( x, y ), Quaternion.identity, transform );
+                        // Create the breakable wall
+                        Transform t = Instantiate( breakableWallPrefab, GetTileCenterPos( x, y ), Quaternion.identity, transform );
                         wallGridPositions.Add( new Vector2Int( x, y ) );
+
+                        // Attach to the walls destruction event
+                        DestructableWallController wallScript = t.gameObject.GetComponent<DestructableWallController>();
+                        if( wallScript == null )
+                            Debug.LogError("No script found on destructable wall object");
+
+                        wallScript.OnObstacleAboutToDie += HandleObstacleAboutToDie;
                     }
                 }
 
@@ -160,9 +159,13 @@ public class GameManager : MonoBehaviour
     void SpawnMonster()
     {
         Vector3 spawnPos = GetTileCenterPos(monsterSpawnLocation.x, monsterSpawnLocation.y);
-        Instantiate( monsterPrefab, spawnPos, Quaternion.identity, transform );
+        monster = Instantiate( monsterPrefab, spawnPos, Quaternion.identity, transform ) as Transform;
     }
 
+    Vector3Int GetTileCellFromWorldPos(Vector3 pos)
+    {
+        return environmentTilemap.layoutGrid.WorldToCell( pos );
+    }
     Vector3 GetTileCenterPos(int x, int y)
     {
         Vector3Int cellPos = new Vector3Int(x, y, 0);
@@ -185,5 +188,11 @@ public class GameManager : MonoBehaviour
             return true;
 
         return false;
+    }
+
+    void HandleObstacleAboutToDie(Transform obstacleTransform)
+    {
+        Vector3Int gridPosition = GetTileCellFromWorldPos(obstacleTransform.position);
+        pathFinder.RemoveObstaclePosition( gridPosition.x, gridPosition.y );
     }
 }

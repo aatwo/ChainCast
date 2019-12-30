@@ -101,13 +101,13 @@ public class PathFinder : MonoBehaviour
         }
     }
 
-    void AddObstaclePosition( int x, int y)
+    public void AddObstaclePosition( int x, int y)
     {
         int index = IndexFromCoordinate( x, y );
         mNodes[index].blocked = true;
     }
 
-    void RemoveObstaclePosition( int x, int y)
+    public void RemoveObstaclePosition( int x, int y)
     {
         int index = IndexFromCoordinate( x, y );
         mNodes[index].blocked = false;
